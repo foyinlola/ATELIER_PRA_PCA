@@ -305,14 +305,38 @@ Difficulté : Moyenne (~2 heures)
 * backup_age_seconds : âge du dernier backup
 <img width="1032" height="460" alt="Capture d’écran 2026-03-27 à 11 42 24" src="https://github.com/user-attachments/assets/005e14f0-d312-47b8-86a8-afb3960ebfa8" />
 
+
+
+
 *..**Déposez ici une copie d'écran** de votre réussite..*
 
 ---------------------------------------------------
 ### **Atelier 2 : Choisir notre point de restauration**  
 Aujourd’hui nous restaurobs “le dernier backup”. Nous souhaitons **ajouter la capacité de choisir un point de restauration**.
 
-*..Décrir ici votre procédure de restauration (votre runbook)..*  
-  
+<img width="561" height="673" alt="Capture d’écran 2026-03-27 à 12 00 31" src="https://github.com/user-attachments/assets/fcbd3054-2bd3-4cba-b7ec-2a4591b7d411" />
+<img width="692" height="270" alt="Capture d’écran 2026-03-27 à 12 02 41" src="https://github.com/user-attachments/assets/f1122175-fc95-4e76-b1a0-7c076dd64928" />
+<img width="1296" height="341" alt="Capture d’écran 2026-03-27 à 12 07 07" src="https://github.com/user-attachments/assets/8ef800e9-0f94-4703-9589-e60779686cc3" />
+
+#### Fichiers créés
+- `pra/51-job-restore-custom.yaml` : Job Kubernetes paramétrable
+- `pra/restore.sh` : Script interactif de restauration
+
+#### Procédure (Runbook)
+
+**Étape 1 — Lancer le script interactif**
+./pra/restore.sh
+
+**Étape 2 — Choisir le point de restauration**
+Le script affiche la liste des backups disponibles.
+Entrer le nom du fichier souhaité (ex: app_20250327_143000.db)
+
+**Étape 3 — Confirmer**
+Taper "oui" pour confirmer la restauration.
+
+**Étape 4 — Vérifier**
+kubectl -n pra port-forward svc/flask 8080:80 >/tmp/web.log 2>&1 &
+Puis vérifier sur /count et /consultation  
 ---------------------------------------------------
 Evaluation
 ---------------------------------------------------
