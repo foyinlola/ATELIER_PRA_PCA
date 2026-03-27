@@ -315,7 +315,6 @@ Difficulté : Moyenne (~2 heures)
 Aujourd’hui nous restaurobs “le dernier backup”. Nous souhaitons **ajouter la capacité de choisir un point de restauration**.
 
 <img width="561" height="673" alt="Capture d’écran 2026-03-27 à 12 00 31" src="https://github.com/user-attachments/assets/fcbd3054-2bd3-4cba-b7ec-2a4591b7d411" />
-<img width="692" height="270" alt="Capture d’écran 2026-03-27 à 12 02 41" src="https://github.com/user-attachments/assets/f1122175-fc95-4e76-b1a0-7c076dd64928" />
 <img width="1296" height="341" alt="Capture d’écran 2026-03-27 à 12 07 07" src="https://github.com/user-attachments/assets/8ef800e9-0f94-4703-9589-e60779686cc3" />
 
 #### Fichiers créés
