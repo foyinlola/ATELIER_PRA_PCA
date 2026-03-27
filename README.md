@@ -275,24 +275,8 @@ Aucune supervision ne détecte automatiquement qu'un backup a échoué ou que le
   
 **Exercice 5 :**  
 Proposez une archtecture plus robuste.   
-  
-┌─────────────────────────────────────────────────────┐
-│                  Kubernetes (multi-nodes)            │
-│                                                      │
-│  ┌──────────┐  ┌──────────┐  ┌──────────────────┐  │
-│  │ Pod Flask│  │ Pod Flask│  │  PostgreSQL       │  │
-│  │(replica 1)│  │(replica 2)│  │  (StatefulSet)   │  │
-│  └──────────┘  └──────────┘  │  + réplication    │  │
-│        └──────────┘          └──────────────────┘  │
-│              │                        │             │
-│         Load Balancer          PVC (StorageClass    │
-│                                 répliquée)          │
-└─────────────────────────────────────────────────────┘
-         │                          │
-         ▼                          ▼
-   Monitoring                Backup automatique
-   (Prometheus/Grafana)      vers S3 / stockage
-   + Alerting                distant (autre région)
+<img width="737" height="535" alt="Capture d’écran 2026-03-27 à 12 13 36" src="https://github.com/user-attachments/assets/e2dc6876-3887-4f8a-987f-43f433adc941" />
+
  
 ---------------------------------------------------
 Séquence 6 : Ateliers  
