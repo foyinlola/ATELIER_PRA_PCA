@@ -231,28 +231,69 @@ Faites preuve de pédagogie et soyez clair dans vos explications et procedures d
 **Exercice 1 :**  
 Quels sont les composants dont la perte entraîne une perte de données ?  
   
-*..Répondez à cet exercice ici..*
+PVC pra-backup
 
 **Exercice 2 :**  
 Expliquez nous pourquoi nous n'avons pas perdu les données lors de la supression du PVC pra-data  
   
-*..Répondez à cet exercice ici..*
+Parce que le CronJob sauvegardait chaque minute les données de pra-data vers pra-backup.
+
 
 **Exercice 3 :**  
 Quels sont les RTO et RPO de cette solution ?  
   
-*..Répondez à cet exercice ici..*
+Le CronJob tourne toutes les minutes. Dans le pire cas, on perd les données des 59 dernières secondes avant le sinistre.
+RPO = 1 minute
+
+La procédure manuelle pour le le RTO comprend plusieurs étapes :
+
+Scaler le déploiement à 0
+Supprimer les jobs
+Relancer kubectl apply
+Lancer le job de restauration
+Relancer le port-forward
+
+En pratique : RTO = 5 à 10 minutes (procédure manuelle, pas automatisée) 
+
 
 **Exercice 4 :**  
 Pourquoi cette solution (cet atelier) ne peux pas être utilisé dans un vrai environnement de production ? Que manque-t-il ?   
   
-*..Répondez à cet exercice ici..*
+Plusieurs problèmes critiques :
+1. Stockage local non répliqué
+Les deux PVC (pra-data et pra-backup) sont sur le même cluster K3d local. Si la machine physique tombe, les deux volumes disparaissent en même temps. La sauvegarde ne sert à rien.
+2. Pas de sauvegarde hors-site (offsite)
+Une vraie stratégie de PRA exige la règle 3-2-1 : 3 copies, sur 2 supports différents, dont 1 copie distante (autre datacenter, cloud S3, etc.)
+3. Restauration manuelle
+Le RTO dépend d'un opérateur humain qui exécute les commandes. Il n'y a pas d'automatisation ni d'alerte.
+4. Pas de haute disponibilité
+Un seul pod Flask — si le pod est en cours de redémarrage, l'application est indisponible (même quelques secondes).
+5. SQLite n'est pas adapté à la production
+SQLite ne supporte pas les accès concurrents élevés ni la réplication native.
+6. Pas de monitoring ni d'alerting
+Aucune supervision ne détecte automatiquement qu'un backup a échoué ou que le volume est corrompu.
   
 **Exercice 5 :**  
 Proposez une archtecture plus robuste.   
   
-*..Répondez à cet exercice ici..*
-
+┌─────────────────────────────────────────────────────┐
+│                  Kubernetes (multi-nodes)            │
+│                                                      │
+│  ┌──────────┐  ┌──────────┐  ┌──────────────────┐  │
+│  │ Pod Flask│  │ Pod Flask│  │  PostgreSQL       │  │
+│  │(replica 1)│  │(replica 2)│  │  (StatefulSet)   │  │
+│  └──────────┘  └──────────┘  │  + réplication    │  │
+│        └──────────┘          └──────────────────┘  │
+│              │                        │             │
+│         Load Balancer          PVC (StorageClass    │
+│                                 répliquée)          │
+└─────────────────────────────────────────────────────┘
+         │                          │
+         ▼                          ▼
+   Monitoring                Backup automatique
+   (Prometheus/Grafana)      vers S3 / stockage
+   + Alerting                distant (autre région)
+ 
 ---------------------------------------------------
 Séquence 6 : Ateliers  
 Difficulté : Moyenne (~2 heures)
