@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: sqlite-restore-custom
+  namespace: pra
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: restore
+          image: alpine
+          command: ["/bin/sh","-c"]
+          args:
+            - |
+              echo "Restauration depuis : $BACKUP_FILE"
+              cp /backup/$BACKUP_FILE /data/app.db
+              echo "Terminé."
+          env:
+            - name: BACKUP_FILE
+              value: "PLACEHOLDER"
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: backup
+              mountPath: /backup
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: pra-data
+        - name: backup
+          persistentVolumeClaim:
+            claimName: pra-backup
